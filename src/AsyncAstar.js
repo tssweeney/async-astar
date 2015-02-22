@@ -1,10 +1,18 @@
 var SortedHash = require("./SortedHash.js");
+var assert = require("assert");
 
 var AsyncAstar = module.exports = function(options) {
+  assert(options);
+  assert(options.initial);
+  assert(options.neighbors);
+  assert(options.onComplete);
+
   var self = this;
   this.initial = options.initial;
   this.neighbors = options.neighbors;
-  this.heuristic = options.heuristic;
+  this.heuristic = options.heuristic || function() {
+    return 0;
+  };
   this.onComplete = options.onComplete;
 
   this.unresolved = new SortedHash("__score");
@@ -19,7 +27,7 @@ var AsyncAstar = module.exports = function(options) {
   this.timedOut = false;
   this.solved = false;
 
-  if (options.timeout) {
+  if (options.timeout && options.timeout > 0) {
     setTimeout(function() {
       self.timedOut = true;
       if (options.onTimeout) {
