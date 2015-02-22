@@ -4,7 +4,7 @@
   "description": "An asynchronous, generic A*(a-star) solver.",
   "main": "src/AsyncAstar.js",
   "scripts": {
-    "test": "grunt simplemocha"
+    "test": "mocha -R min ./tests/"
   },
   "keywords": [
     "a-star",
@@ -13,6 +13,9 @@
   ],
   "author": "Timothy S Sweeney Jr.",
   "license": "ISC",
+  "dependencies": {
+    "mocha": "^2.1.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-jshint": "^0.11.0",
