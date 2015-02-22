@@ -1,4 +1,4 @@
-var tasks = ['jsbeautifier', 'jshint', 'simplemocha'];
+var tasks = ['jsbeautifier', 'jshint', 'simplemocha', 'docker'];
 
 module.exports = function(grunt) {
 
@@ -41,6 +41,15 @@ module.exports = function(grunt) {
       }
     },
 
+    docker: {
+      main: {
+        src: "src/*.js",
+
+        dest: "docs/"
+
+      }
+    },
+
     // Run on change of any files
     watch: {
       files: ['src/*.js', 'tests/*.js', 'package.json', 'Gruntfile.js'],
@@ -52,5 +61,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks("grunt-jsbeautifier");
   grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-docker');
   grunt.registerTask('default', tasks.concat(['watch']));
 };

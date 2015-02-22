@@ -1,3 +1,9 @@
+[![NPM](https://nodei.co/npm/async-astar.png?downloads=true)](https://nodei.co/npm/async-astar/)
+
+Async-Astar [![Build Status](https://travis-ci.org/tssweeney/async-astar.svg)](https://travis-ci.org/tssweeney/async-astar)
+====
+---
+
 Usage:
 
   var solver = new AsyncAstar({
