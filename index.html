@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Async-astar by tssweeney</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Async-astar</h1>
+        <p>An asynchronous, generic A*(a-star) solver.</p>
+
+        <p class="view"><a href="https://github.com/tssweeney/async-astar">View the Project on GitHub <small>tssweeney/async-astar</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/tssweeney/async-astar/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tssweeney/async-astar/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tssweeney/async-astar">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p><a href="https://nodei.co/npm/async-astar/"><img src="https://nodei.co/npm/async-astar.png?downloads=true" alt="NPM"></a></p>
+
+<h1>
+<a id="async-astar-" class="anchor" href="#async-astar-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Async-Astar <a href="https://travis-ci.org/tssweeney/async-astar"><img src="https://travis-ci.org/tssweeney/async-astar.svg" alt="Build Status"></a>
+</h1>
+
+<hr>
+
+<p>Usage:</p>
+
+<p>var solver = new AsyncAstar({
+    initial: {Object}
+    neighbors: {Function},
+    heuristic: {Function},
+    onComplete: {Function},
+    onTimeout: {Function},
+    timeout: {Integer}
+  });</p>
+
+<p>Intial should be an object with at least the following variables:</p>
+
+<ul>
+<li>id {String} Uniquely identifies puzzle/game state</li>
+<li>state {Integer} -1|0|1 Impossible|Playing|Win respectively. This a-star solver can handle imposible cases (perhaps a wall, or a pit of doom)</li>
+</ul>
+
+<p>Neighbors should return the neighboring states of a given state</p>
+
+<ul>
+<li>returns an array of neighboring states formatted with the minimum requirements above in addition to "action". "action" is a varaible that represents what it takes to get from the given state to the neighbor (directional, keypress, etc..)</li>
+<li>states will retain their values so you can put additional information in them (x,y perhaps)</li>
+</ul>
+
+<p>Heuristic should take a state description and return a value (lower the better)</p>
+
+<ul>
+<li>The heuristic is the estimated "distance" from the win-state. If this does not apply to your puzzle, just return 0.</li>
+</ul>
+
+<p>onComplete will be passed a an object formatted in this way:</p>
+
+<ul>
+<li>success: boolean if the puzzle was solved</li>
+<li>path: array of actions to get to solution</li>
+<li>cost: count of actions needed</li>
+</ul>
+
+<p>onTimeout: function will be called if the solver times out</p>
+
+<p>timeout:</p>
+
+<ul>
+<li>maximum allowed execution time. Defaults to 0 (never).</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/tssweeney">tssweeney</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
