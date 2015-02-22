@@ -44,9 +44,7 @@ module.exports = function(grunt) {
     docker: {
       main: {
         src: "src/*.js",
-
-        dest: "docs/"
-
+        dest: "../docs/"
       }
     },
 

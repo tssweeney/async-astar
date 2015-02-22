@@ -2,7 +2,9 @@
 
 Async-Astar [![Build Status](https://travis-ci.org/tssweeney/async-astar.svg)](https://travis-ci.org/tssweeney/async-astar)
 ====
----
+
+**[View Documentation](http://timssweeney.com/async-astar/src/)**
+
 
 Usage:
 
