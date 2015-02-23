@@ -1015,12 +1015,11 @@ set the solved flag to true,</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-58" id="section-58">&#182;</a>
 </div>
-<p>After all of the neighbors have been processed, recursively
-solve the puzzle.</p>
+<p>After all of the neighbors have been processed,
+if the system hasn't timed out or been solved</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">this</span><span class="p">.</span><span class="nx">solve</span><span class="p">();</span>
-
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -1029,6 +1028,21 @@ solve the puzzle.</p>
         <td class="docs">
 <div class="pilwrap">
   <a class="pilcrow" href="#section-59" id="section-59">&#182;</a>
+</div>
+<p>recursively solve the puzzle.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">this</span><span class="p">.</span><span class="nx">solve</span><span class="p">();</span>
+    <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-60" id="section-60">&#182;</a>
 </div>
 <p>If the unresolved list is empty, and the solver has not timedOut or been solved,</p>
         </td>
@@ -1041,7 +1055,7 @@ solve the puzzle.</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-60" id="section-60">&#182;</a>
+  <a class="pilcrow" href="#section-61" id="section-61">&#182;</a>
 </div>
 <p>notify the user that the puzzle does not have a solution.</p>
         </td>
