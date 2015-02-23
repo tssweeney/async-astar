@@ -78,13 +78,13 @@ Number of milliseconds before timeout is called and solving halts. Defaults to n
 Function that is called once the solution has been found. It accepts a single argument that will have 3 attributes:
 
 * success {Boolean} if the puzzle was solved
-* path {Array} of `action` attributes of each state to get to solution
-* cost {Integer} count of actions needed (path.length - 1)
+* actions {Array} of `action` attributes of each state to get to solution
+* cost {Integer} count of actions needed (actions.length - 1)
 
 ```
 onComplete: function(result) {
   if (result.success) {
-    console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.path);
+    console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.actions);
   } else {
     console.log("There is no solution to the puzzle.");
   }
@@ -142,31 +142,33 @@ var AsyncAstar = module.exports = function(options) {
 
   // Add the initial state to the unresolved hash,
   this.unresolved.push(this.initial);
-  // set the timedOut flag to false,
-  this.timedOut = false;
-  // and the solved flag to false.
+  // set the solved flag to false,
   this.solved = false;
-
-  // If the user declared a positive timeout,
-  if (options.timeout && options.timeout > 0) {
-    // setup a timeout that will trigger in options.timeout milliseconds.
-    this.timeoutFn = setTimeout(function() {
-      // Once the timeout fires,
-      // set the timedOut flag to true,
-      self.timedOut = true;
-      // and if there is an onTimeout function,
-      if (options.onTimeout) {
-        // call it as well.
-        options.onTimeout();
-      }
-    }, options.timeout);
+  // and if there is a timeout,
+  if (options.timeout) {
+    // determine the timeout time,
+    this.timeoutTime = options.timeout + Date.now();
+    // and set the timeout function pointer
+    this.onTimeout = options.onTimeout;
   }
 
   // Launch the solve function asynchronously 
   setTimeout(function() {
     self.solve();
   }, 0);
+};
 
+/**
+ * @method
+ * isTimedOut will determine if the system has timed out
+ * @return {Boolean} True if the system has a timeout and the time has passed the threashold.
+ */
+AsyncAstar.prototype.isTimedOut = function() {
+  if (this.timeoutTime) {
+    return this.timeoutTime <= Date.now();
+  } else {
+    return false;
+  }
 };
 
 /**
@@ -179,15 +181,16 @@ AsyncAstar.prototype.solve = function() {
   // and get the lowest-scored unresolved state.
   var currentState = this.unresolved.pop();
 
-  // If there is a state to resolve,
-  if (currentState) {
+  // If there is a state to resolve, there has not been a solution, and the system is not
+  // timed out,
+  while (currentState && !this.solved && !this.isTimedOut()) {
     // find its neighbors,
     var neighbors = this.neighbors(currentState);
     // and add it to the resolved hash.
     this.resolved[currentState.id] = currentState;
 
     // For each neighbor, and while the solver has not timed out,
-    for (var n = 0; !this.timedOut && !this.solved && n < neighbors.length; n++) {
+    for (var n = 0; !this.isTimedOut() && !this.solved && n < neighbors.length; n++) {
       // set the neighborState to the current iteration's neighbor.
       neighborState = neighbors[n];
       // Set the neighbor's parent to the currentState,
@@ -205,12 +208,6 @@ AsyncAstar.prototype.solve = function() {
         var path = [];
         // and set the pointer to the win-state.
         var pointer = neighborState;
-
-        // If there is a timeout,
-        if (this.timeoutFn) {
-          // clear the function
-          clearTimeout(this.timeoutFn);
-        }
 
         // While the pointer is not-null,
         while (pointer) {
@@ -267,20 +264,21 @@ AsyncAstar.prototype.solve = function() {
       }
     }
 
-    // After all of the neighbors have been processed,
-    // if the system hasn't timed out or been solved
-    if (!this.timedOut && !this.solved) {
-      // recursively solve the puzzle.
-      this.solve();
-    }
+    // Set the currentState to the next best guess.
+    currentState = this.unresolved.pop();
+  }
 
-    // If the unresolved list is empty, and the solver has not timedOut or been solved,
-  } else if (!this.timedOut && !this.solved) {
-    // clear the timeout
-    if (this.timeoutFn) {
-      clearTimeout(this.timeoutFn);
-    }
-    // and notify the user that the puzzle does not have a solution.
+  // At this point the solution has been found, there is no solution, or the system
+  // timed out.
+
+  // If the system timed out
+  if (this.isTimedOut()) {
+    // notify the user if possible.
+    if (this.onTimeout)
+      this.onTimeout();
+    // If the system did not time out, but there is no solution,
+  } else if (!this.solved) {
+    // notify the user that the puzzle does not have a solution.
     this.onComplete({
       success: false,
       actions: [],

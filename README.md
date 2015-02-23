@@ -93,13 +93,13 @@ Number of milliseconds before timeout is called and solving halts. Defaults to n
 Function that is called once the solution has been found. It accepts a single argument that will have 3 attributes:
 
 * success {Boolean} if the puzzle was solved
-* path {Array} of `action` attributes of each state to get to solution
-* cost {Integer} count of actions needed (path.length - 1)
+* actions {Array} of `action` attributes of each state to get to solution
+* cost {Integer} count of actions needed (actions.length - 1)
 
 ```
 onComplete: function(result) {
 	if (result.success) {
-		console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.path);
+		console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.actions);
 	} else {
 		console.log("There is no solution to the puzzle.");
 	}
