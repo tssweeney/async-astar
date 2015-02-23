@@ -31,8 +31,9 @@
         <p><a href="https://nodei.co/npm/async-astar/"><img src="https://nodei.co/npm/async-astar.png?downloads=true" alt="NPM"></a></p>
 
 <h1>
-<a id="async-astar-" class="anchor" href="#async-astar-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Async-Astar <a href="https://travis-ci.org/tssweeney/async-astar"><img src="https://travis-ci.org/tssweeney/async-astar.svg" alt="Build Status"></a>
-</h1>
+<a id="async-astar-" class="anchor" href="#async-astar-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Async-Astar </h1>
+
+<p><a href="https://travis-ci.org/tssweeney/async-astar"><img src="https://travis-ci.org/tssweeney/async-astar.svg" alt="Build Status"></a></p>
 
 <p><strong><a href="http://timssweeney.com/async-astar/src/AsyncAstar.js.html">View Documentation</a></strong></p>
 
@@ -133,13 +134,13 @@ MyGame.getState();
 
 <ul>
 <li>success {Boolean} if the puzzle was solved</li>
-<li>path {Array} of <code>action</code> attributes of each state to get to solution</li>
-<li>cost {Integer} count of actions needed (path.length - 1)</li>
+<li>actions {Array} of <code>action</code> attributes of each state to get to solution</li>
+<li>cost {Integer} count of actions needed (actions.length - 1)</li>
 </ul>
 
 <pre><code>onComplete: function(result) {
     if (result.success) {
-        console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.path);
+        console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.actions);
     } else {
         console.log("There is no solution to the puzzle.");
     }
