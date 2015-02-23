@@ -261,11 +261,14 @@ AsyncAstar.prototype.solve = function() {
       }
     }
 
-    // After all of the neighbors have been processed, recursively
-    // solve the puzzle.
-    this.solve();
+    // After all of the neighbors have been processed,
+    // if the system hasn't timed out or been solved
+    if (!this.timedOut && !this.solved) {
+      // recursively solve the puzzle.
+      this.solve();
+    }
 
-    // If the unresolved list is empty, and the solver has not timedOut or been solved,
+  // If the unresolved list is empty, and the solver has not timedOut or been solved,
   } else if (!this.timedOut && !this.solved) {
     // notify the user that the puzzle does not have a solution.
     this.onComplete({

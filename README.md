@@ -1,6 +1,10 @@
 [![NPM](https://nodei.co/npm/async-astar.png?downloads=true)](https://nodei.co/npm/async-astar/)
-Async-Astar [![Build Status](https://travis-ci.org/tssweeney/async-astar.svg)](https://travis-ci.org/tssweeney/async-astar)
-====
+
+Async-Astar 
+===
+
+[![Build Status](https://travis-ci.org/tssweeney/async-astar.svg)](https://travis-ci.org/tssweeney/async-astar)
+
 **[View Documentation](http://timssweeney.com/async-astar/src/AsyncAstar.js.html)**
 
 **[Read About A\*(A-Star) Algorithm Here](http://en.wikipedia.org/wiki/A*_search_algorithm)**
