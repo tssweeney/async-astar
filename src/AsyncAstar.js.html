@@ -201,12 +201,12 @@ return Math.abs(state.x - endLocation.x) + Math.abs(state.y - endLocation.y)
 <p>Function that is called once the solution has been found. It accepts a single argument that will have 3 attributes:</p>
 
 <p>success {Boolean} if the puzzle was solved
-path {Array} of <code>action</code> attributes of each state to get to solution
-cost {Integer} count of actions needed (path.length - 1)</p>
+actions {Array} of <code>action</code> attributes of each state to get to solution
+cost {Integer} count of actions needed (actions.length - 1)</p>
 
 <div class='highlight'><pre><code language=''>onComplete: function(result) {
 if (result.success) {
-console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.path);
+console.log("The steps(" + result.cost + ") required to solve the puzzle are: ", result.actions);
 } else {
 console.log("There is no solution to the puzzle.");
 }
@@ -458,10 +458,10 @@ console.log("Solver timed out.");
 <div class="pilwrap">
   <a class="pilcrow" href="#section-19" id="section-19">&#182;</a>
 </div>
-<p>set the timedOut flag to false,</p>
+<p>set the solved flag to false,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-  <span class="k">this</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
 </pre></div>
         </td>
@@ -471,11 +471,10 @@ console.log("Solver timed out.");
 <div class="pilwrap">
   <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
 </div>
-<p>and the solved flag to false.</p>
+<p>and if there is a timeout,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-  <span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-
+  <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">timeout</span><span class="p">)</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -485,10 +484,10 @@ console.log("Solver timed out.");
 <div class="pilwrap">
   <a class="pilcrow" href="#section-21" id="section-21">&#182;</a>
 </div>
-<p>If the user declared a positive timeout,</p>
+<p>determine the timeout time,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timeoutTime</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">+</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
 
 </pre></div>
         </td>
@@ -498,52 +497,10 @@ console.log("Solver timed out.");
 <div class="pilwrap">
   <a class="pilcrow" href="#section-22" id="section-22">&#182;</a>
 </div>
-<p>setup a timeout that will trigger in options.timeout milliseconds.</p>
+<p>and set the timeout function pointer</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">this</span><span class="p">.</span><span class="nx">timeoutFn</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-23" id="section-23">&#182;</a>
-</div>
-<p>Once the timeout fires,
-set the timedOut flag to true,</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-24" id="section-24">&#182;</a>
-</div>
-<p>and if there is an onTimeout function,</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">)</span> <span class="p">{</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
-</div>
-<p>call it as well.</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">();</span>
-      <span class="p">}</span>
-    <span class="p">},</span> <span class="nx">options</span><span class="p">.</span><span class="nx">timeout</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">;</span>
   <span class="p">}</span>
 
 
@@ -553,7 +510,7 @@ set the timedOut flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
+  <a class="pilcrow" href="#section-23" id="section-23">&#182;</a>
 </div>
 <p>Launch the solve function asynchronously </p>
         </td>
@@ -561,7 +518,6 @@ set the timedOut flag to true,</p>
   <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">self</span><span class="p">.</span><span class="nx">solve</span><span class="p">();</span>
   <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
-
 <span class="p">};</span>
 
 
@@ -571,7 +527,45 @@ set the timedOut flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
+  <a class="pilcrow" href="#section-24" id="section-24">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary">
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">method
+isTimedOut</div>
+    <div class="dox_tag_detail">
+      <span>will determine if the system has timed out</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>True if the system has a timeout and the time has passed the threashold.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nx">AsyncAstar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">isTimedOut</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">timeoutTime</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">timeoutTime</span> <span class="o">&lt;=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
 </div>
 <div class="dox">
   <div class="summary">
@@ -596,7 +590,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
 </div>
 <p>First, declare a holder for a neighbor state,</p>
         </td>
@@ -609,7 +603,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-29" id="section-29">&#182;</a>
+  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
 </div>
 <p>and get the lowest-scored unresolved state.</p>
         </td>
@@ -623,12 +617,13 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-30" id="section-30">&#182;</a>
+  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
 </div>
-<p>If there is a state to resolve,</p>
+<p>If there is a state to resolve, there has not been a solution, and the system is not
+timed out,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">currentState</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">currentState</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -636,7 +631,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-31" id="section-31">&#182;</a>
+  <a class="pilcrow" href="#section-29" id="section-29">&#182;</a>
 </div>
 <p>find its neighbors,</p>
         </td>
@@ -649,7 +644,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
+  <a class="pilcrow" href="#section-30" id="section-30">&#182;</a>
 </div>
 <p>and add it to the resolved hash.</p>
         </td>
@@ -663,12 +658,12 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-33" id="section-33">&#182;</a>
+  <a class="pilcrow" href="#section-31" id="section-31">&#182;</a>
 </div>
 <p>For each neighbor, and while the solver has not timed out,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">neighbors</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">neighbors</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -676,7 +671,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-34" id="section-34">&#182;</a>
+  <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
 </div>
 <p>set the neighborState to the current iteration's neighbor.</p>
         </td>
@@ -689,7 +684,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
+  <a class="pilcrow" href="#section-33" id="section-33">&#182;</a>
 </div>
 <p>Set the neighbor's parent to the currentState,</p>
         </td>
@@ -702,7 +697,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-36" id="section-36">&#182;</a>
+  <a class="pilcrow" href="#section-34" id="section-34">&#182;</a>
 </div>
 <p>find the heuristic,</p>
         </td>
@@ -715,7 +710,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-37" id="section-37">&#182;</a>
+  <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
 </div>
 <p>set the depth to be one more than the parent,</p>
         </td>
@@ -728,7 +723,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-38" id="section-38">&#182;</a>
+  <a class="pilcrow" href="#section-36" id="section-36">&#182;</a>
 </div>
 <p>and set the composite score.</p>
         </td>
@@ -742,7 +737,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
+  <a class="pilcrow" href="#section-37" id="section-37">&#182;</a>
 </div>
 <p>If the neighbor is in the win state,</p>
         </td>
@@ -755,7 +750,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
+  <a class="pilcrow" href="#section-38" id="section-38">&#182;</a>
 </div>
 <p>declare an empty path array,</p>
         </td>
@@ -768,7 +763,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-41" id="section-41">&#182;</a>
+  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
 </div>
 <p>and set the pointer to the win-state.</p>
         </td>
@@ -782,35 +777,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-42" id="section-42">&#182;</a>
-</div>
-<p>If there is a timeout,</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">timeoutFn</span><span class="p">)</span> <span class="p">{</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-43" id="section-43">&#182;</a>
-</div>
-<p>clear the function</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-          <span class="nx">clearTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">timeoutFn</span><span class="p">);</span>
-        <span class="p">}</span>
-
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-44" id="section-44">&#182;</a>
+  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
 </div>
 <p>While the pointer is not-null,</p>
         </td>
@@ -823,7 +790,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-45" id="section-45">&#182;</a>
+  <a class="pilcrow" href="#section-41" id="section-41">&#182;</a>
 </div>
 <p>push onto the path, the pointer's action,</p>
         </td>
@@ -836,7 +803,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-46" id="section-46">&#182;</a>
+  <a class="pilcrow" href="#section-42" id="section-42">&#182;</a>
 </div>
 <p>and point the pointer to the pointer's parent.</p>
         </td>
@@ -851,7 +818,7 @@ Solve</div>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-47" id="section-47">&#182;</a>
+  <a class="pilcrow" href="#section-43" id="section-43">&#182;</a>
 </div>
 <p>After the path has been created,
 set the solved flag to true,</p>
@@ -865,7 +832,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-48" id="section-48">&#182;</a>
+  <a class="pilcrow" href="#section-44" id="section-44">&#182;</a>
 </div>
 <p>and return the solution to the user's defined callback.</p>
         </td>
@@ -883,7 +850,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-49" id="section-49">&#182;</a>
+  <a class="pilcrow" href="#section-45" id="section-45">&#182;</a>
 </div>
 <p>If the neighbor is not in the win state,</p>
         </td>
@@ -896,7 +863,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-50" id="section-50">&#182;</a>
+  <a class="pilcrow" href="#section-46" id="section-46">&#182;</a>
 </div>
 <p>and it is already resolved,</p>
         </td>
@@ -909,7 +876,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-51" id="section-51">&#182;</a>
+  <a class="pilcrow" href="#section-47" id="section-47">&#182;</a>
 </div>
 <p>check to see if this path to the same state is more effecient (lower depth).</p>
         </td>
@@ -922,7 +889,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-52" id="section-52">&#182;</a>
+  <a class="pilcrow" href="#section-48" id="section-48">&#182;</a>
 </div>
 <p>If it is, then update the resolved hash's entry to the better version.</p>
         </td>
@@ -940,7 +907,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-53" id="section-53">&#182;</a>
+  <a class="pilcrow" href="#section-49" id="section-49">&#182;</a>
 </div>
 <p>If the state is imposible to win from,</p>
         </td>
@@ -953,7 +920,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-54" id="section-54">&#182;</a>
+  <a class="pilcrow" href="#section-50" id="section-50">&#182;</a>
 </div>
 <p>add it to the resolved hash.</p>
         </td>
@@ -967,7 +934,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-55" id="section-55">&#182;</a>
+  <a class="pilcrow" href="#section-51" id="section-51">&#182;</a>
 </div>
 <p>Otherwise, assume that the neighbor is a resolvable state.</p>
         </td>
@@ -980,7 +947,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-56" id="section-56">&#182;</a>
+  <a class="pilcrow" href="#section-52" id="section-52">&#182;</a>
 </div>
 <p>If it already is in the unresolved heap,</p>
         </td>
@@ -993,7 +960,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-57" id="section-57">&#182;</a>
+  <a class="pilcrow" href="#section-53" id="section-53">&#182;</a>
 </div>
 <p>update the unresolved heap with the better depth.</p>
         </td>
@@ -1010,7 +977,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-58" id="section-58">&#182;</a>
+  <a class="pilcrow" href="#section-54" id="section-54">&#182;</a>
 </div>
 <p>If it is not in then unresolved list,</p>
         </td>
@@ -1023,7 +990,7 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-59" id="section-59">&#182;</a>
+  <a class="pilcrow" href="#section-55" id="section-55">&#182;</a>
 </div>
 <p>then push it in.</p>
         </td>
@@ -1041,13 +1008,68 @@ set the solved flag to true,</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-60" id="section-60">&#182;</a>
+  <a class="pilcrow" href="#section-56" id="section-56">&#182;</a>
 </div>
-<p>After all of the neighbors have been processed,
-if the system hasn't timed out or been solved</p>
+<p>Set the currentState to the next best guess.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">currentState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">unresolved</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+  <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-57" id="section-57">&#182;</a>
+</div>
+<p>At this point the solution has been found, there is no solution, or the system
+timed out.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-58" id="section-58">&#182;</a>
+</div>
+<p>If the system timed out</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-59" id="section-59">&#182;</a>
+</div>
+<p>notify the user if possible.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">)</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">();</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-60" id="section-60">&#182;</a>
+</div>
+<p>If the system did not time out, but there is no solution,</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -1057,50 +1079,7 @@ if the system hasn't timed out or been solved</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-61" id="section-61">&#182;</a>
 </div>
-<p>recursively solve the puzzle.</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-      <span class="k">this</span><span class="p">.</span><span class="nx">solve</span><span class="p">();</span>
-    <span class="p">}</span>
-
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-62" id="section-62">&#182;</a>
-</div>
-<p>If the unresolved list is empty, and the solver has not timedOut or been solved,</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">timedOut</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-63" id="section-63">&#182;</a>
-</div>
-<p>clear the timeout</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">timeoutFn</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">clearTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">timeoutFn</span><span class="p">);</span>
-    <span class="p">}</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-64" id="section-64">&#182;</a>
-</div>
-<p>and notify the user that the puzzle does not have a solution.</p>
+<p>notify the user that the puzzle does not have a solution.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
     <span class="k">this</span><span class="p">.</span><span class="nx">onComplete</span><span class="p">({</span>
