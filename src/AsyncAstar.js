@@ -150,7 +150,7 @@ var AsyncAstar = module.exports = function(options) {
   // If the user declared a positive timeout,
   if (options.timeout && options.timeout > 0) {
     // setup a timeout that will trigger in options.timeout milliseconds.
-    setTimeout(function() {
+    this.timeoutFn = setTimeout(function() {
       // Once the timeout fires,
       // set the timedOut flag to true,
       self.timedOut = true;
@@ -205,6 +205,12 @@ AsyncAstar.prototype.solve = function() {
         var path = [];
         // and set the pointer to the win-state.
         var pointer = neighborState;
+
+        // If there is a timeout,
+        if (this.timeoutFn) {
+          // clear the function
+          clearTimeout(this.timeoutFn);
+        }
 
         // While the pointer is not-null,
         while (pointer) {
@@ -268,9 +274,13 @@ AsyncAstar.prototype.solve = function() {
       this.solve();
     }
 
-  // If the unresolved list is empty, and the solver has not timedOut or been solved,
+    // If the unresolved list is empty, and the solver has not timedOut or been solved,
   } else if (!this.timedOut && !this.solved) {
-    // notify the user that the puzzle does not have a solution.
+    // clear the timeout
+    if (this.timeoutFn) {
+      clearTimeout(this.timeoutFn);
+    }
+    // and notify the user that the puzzle does not have a solution.
     this.onComplete({
       success: false,
       actions: [],
