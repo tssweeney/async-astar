@@ -1,4 +1,4 @@
-// Require the dependencies.
+// Require the dependencies
 var SortedHash = require("./SortedHash.js");
 var assert = require("assert");
 

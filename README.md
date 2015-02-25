@@ -9,7 +9,7 @@ Async-Astar
 
 **[Read About A\*(A-Star) Algorithm Here](http://en.wikipedia.org/wiki/A*_search_algorithm)**
 
-This module provides an asynchronous, generic A\* implementation that can be used to solve various puzzles, games, or graph traversals. There are 2 main concepts to understand: neighbors and heuristics. Check out the tests for usage examples, but here is a quick overview:
+This module provides an asynchronous, generic A\* implementation that can be used to solve various puzzles, games, or graph traversals. There are 2 main concepts to understand: neighbors and heuristics. Check out the tests for usage examples, but here's a quick overview:
 
 ### Usage
 
