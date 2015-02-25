@@ -44,8 +44,12 @@ module.exports = function(grunt) {
     docker: {
       main: {
         src: "src/*.js",
-        dest: "../async-astar-pages/"
+        dest: "../async-astar-docs/"
       }
+    },
+
+    release: {
+
     },
 
     // Run on change of any files
@@ -60,5 +64,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-jsbeautifier");
   grunt.loadNpmTasks('grunt-simple-mocha');
   grunt.loadNpmTasks('grunt-docker');
+  grunt.loadNpmTasks('grunt-release');
   grunt.registerTask('default', tasks.concat(['watch']));
 };
