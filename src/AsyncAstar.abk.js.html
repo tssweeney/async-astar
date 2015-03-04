@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AsyncAstar.js</title>
+  <title>AsyncAstar.abk.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="../doc-style.css" />
   <script src="../doc-filelist.js"></script>
   <script>
-    var relativeDir = "../", thisFile = "src/AsyncAstar.js", defaultSidebar = true;
+    var relativeDir = "../", thisFile = "src/AsyncAstar.abk.js", defaultSidebar = true;
   </script>
   <script src="../doc-script.js"></script>
 </head>
@@ -47,7 +47,7 @@
   <tbody>
       <tr>
         <td class="docs">
-          <h1>AsyncAstar.js</h1>
+          <h1>AsyncAstar.abk.js</h1>
         </td>
         <td class="code highlight"></td>
       </tr>
@@ -583,7 +583,6 @@ Solve</div>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
 <span class="nx">AsyncAstar</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">solve</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
 
 </pre></div>
         </td>
@@ -624,7 +623,7 @@ Solve</div>
 timed out,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">currentState</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">currentState</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -1011,13 +1010,12 @@ set the solved flag to true,</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-56" id="section-56">&#182;</a>
 </div>
-<p>Run the next iteration in this one's place</p>
+<p>Set the currentState to the next best guess.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="nx">setImmediate</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">solve</span><span class="p">();</span>
-    <span class="p">});</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">currentState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">unresolved</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+  <span class="p">}</span>
+
 
 </pre></div>
         </td>
@@ -1044,7 +1042,7 @@ timed out.</p>
 <p>If the system timed out</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isTimedOut</span><span class="p">())</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -1057,8 +1055,8 @@ timed out.</p>
 <p>notify the user if possible.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">)</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">)</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">onTimeout</span><span class="p">();</span>
 
 </pre></div>
         </td>
@@ -1071,7 +1069,7 @@ timed out.</p>
 <p>If the system did not time out, but there is no solution,</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">solved</span><span class="p">)</span> <span class="p">{</span>
 
 </pre></div>
         </td>
@@ -1084,12 +1082,11 @@ timed out.</p>
 <p>notify the user that the puzzle does not have a solution.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-      <span class="k">this</span><span class="p">.</span><span class="nx">onComplete</span><span class="p">({</span>
-        <span class="nx">success</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="nx">actions</span><span class="o">:</span> <span class="p">[],</span>
-        <span class="nx">cost</span><span class="o">:</span> <span class="mi">0</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onComplete</span><span class="p">({</span>
+      <span class="nx">success</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nx">actions</span><span class="o">:</span> <span class="p">[],</span>
+      <span class="nx">cost</span><span class="o">:</span> <span class="mi">0</span>
+    <span class="p">});</span>
   <span class="p">}</span>
 <span class="p">};</span>
 </pre></div>
