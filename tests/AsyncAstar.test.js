@@ -26,6 +26,7 @@ describe('AsyncAstar', function() {
         neighbors: maze.neighbors,
         heuristic: maze.heuristic,
         onComplete: function(solution) {
+          console.log(solution);
           assert(solution.success);
           assert(JSON.stringify(solution.actions) == "[null,2,2,1,1,0,0,1,1,2,2,2,2]");
           assert(solution.cost == 12);

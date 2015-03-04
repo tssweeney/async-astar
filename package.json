@@ -1,6 +1,6 @@
 {
   "name": "async-astar",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "An asynchronous, generic A*(a-star) solver.",
   "main": "src/AsyncAstar.js",
   "scripts": {

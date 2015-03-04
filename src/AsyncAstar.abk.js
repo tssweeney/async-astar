@@ -176,7 +176,6 @@ AsyncAstar.prototype.isTimedOut = function() {
  * Solve will recursively run the a-star algorithm on the unresolved list.
  */
 AsyncAstar.prototype.solve = function() {
-  var self = this;
   // First, declare a holder for a neighbor state,
   var neighborState;
   // and get the lowest-scored unresolved state.
@@ -184,7 +183,7 @@ AsyncAstar.prototype.solve = function() {
 
   // If there is a state to resolve, there has not been a solution, and the system is not
   // timed out,
-  if (currentState && !this.solved && !this.isTimedOut()) {
+  while (currentState && !this.solved && !this.isTimedOut()) {
     // find its neighbors,
     var neighbors = this.neighbors(currentState);
     // and add it to the resolved hash.
@@ -265,27 +264,25 @@ AsyncAstar.prototype.solve = function() {
       }
     }
 
-    // Run the next iteration in this one's place
-    setImmediate(function() {
-      self.solve();
-    });
-  } else {
-    // At this point the solution has been found, there is no solution, or the system
-    // timed out.
+    // Set the currentState to the next best guess.
+    currentState = this.unresolved.pop();
+  }
 
-    // If the system timed out
-    if (this.isTimedOut()) {
-      // notify the user if possible.
-      if (this.onTimeout)
-        this.onTimeout();
-      // If the system did not time out, but there is no solution,
-    } else if (!this.solved) {
-      // notify the user that the puzzle does not have a solution.
-      this.onComplete({
-        success: false,
-        actions: [],
-        cost: 0
-      });
-    }
+  // At this point the solution has been found, there is no solution, or the system
+  // timed out.
+
+  // If the system timed out
+  if (this.isTimedOut()) {
+    // notify the user if possible.
+    if (this.onTimeout)
+      this.onTimeout();
+    // If the system did not time out, but there is no solution,
+  } else if (!this.solved) {
+    // notify the user that the puzzle does not have a solution.
+    this.onComplete({
+      success: false,
+      actions: [],
+      cost: 0
+    });
   }
 };
